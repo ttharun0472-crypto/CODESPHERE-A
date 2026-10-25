@@ -31,6 +31,7 @@ def create_access_token(user_id: int) -> str:
     payload = {
         "sub": str(user_id),
         "type": "access",
+        "otp_verified": True,
         "exp": expire
     }
 
@@ -54,6 +55,7 @@ def create_refresh_token(user_id: int) -> str:
     payload = {
         "sub": str(user_id),
         "type": "refresh",
+        "otp_verified": True,
         "exp": expire
     }
 
@@ -80,7 +82,7 @@ def verify_token(token: str):
         user_id = payload.get("sub")
         token_type = payload.get("type")
 
-        if user_id is None:
+        if user_id is None or payload.get("otp_verified") is not True:
             return None
 
         if token_type != "access":
@@ -108,7 +110,7 @@ def verify_refresh_token(token: str):
         user_id = payload.get("sub")
         token_type = payload.get("type")
 
-        if user_id is None:
+        if user_id is None or payload.get("otp_verified") is not True:
             return None
 
         if token_type != "refresh":

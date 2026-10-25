@@ -14,7 +14,10 @@ import {
     getAuthToken,
 } from "../../services/learningApi";
 
+import { getTopicsForLesson } from "../../services/lmsApi";
+
 import "./Learning.css";
+import "./lms.css";
 
 
 function LessonDetails() {
@@ -47,6 +50,36 @@ function LessonDetails() {
 
     const [error, setError] =
         useState("");
+
+    const [topics, setTopics] = useState([]);
+    const [topicsLoading, setTopicsLoading] = useState(true);
+    const [topicsError, setTopicsError] = useState("");
+
+    // Topics are expanded by default; learners can collapse them when needed.
+    const [expandedTopics, setExpandedTopics] = useState(true);
+
+    async function loadTopics(selectedLessonId) {
+        setTopics([]);
+        setTopicsError("");
+        setTopicsLoading(true);
+
+        try {
+            const topicsData =
+                await getTopicsForLesson(selectedLessonId);
+
+            if (!Array.isArray(topicsData)) {
+                throw new Error("The topics response was not a list.");
+            }
+
+            setTopics(topicsData);
+        } catch (err) {
+            setTopicsError(
+                err.message || "Unable to load topics for this lesson."
+            );
+        } finally {
+            setTopicsLoading(false);
+        }
+    }
 
 
     async function loadLesson() {
@@ -115,6 +148,9 @@ function LessonDetails() {
             setLoading(false);
 
         }
+
+        // Topic loading stays independent of the lesson content and progress.
+        void loadTopics(lessonId);
     }
 
 
@@ -334,14 +370,6 @@ function LessonDetails() {
 
                         {lesson.notes ? (
                             lesson.notes
-                                .split("\n")
-                                .map(
-                                    (line, index) => (
-                                        <p key={index}>
-                                            {line}
-                                        </p>
-                                    )
-                                )
                         ) : (
                             <p>
                                 No notes have been
@@ -471,6 +499,119 @@ function LessonDetails() {
 
                 )}
 
+            </section>
+
+            {/* =========================================
+                TOPICS SECTION — expandable topic list
+            ========================================== */}
+
+            <section className="lesson-topics-section">
+                <div className="lesson-topics-panel">
+                    <button
+                        type="button"
+                        className="lesson-topics-toggle"
+                        onClick={() => setExpandedTopics((expanded) => !expanded)}
+                        aria-expanded={expandedTopics}
+                        aria-controls="lesson-topics-content"
+                    >
+                        <span className="lesson-topics-toggle-copy">
+                            <span className="lesson-topics-eyebrow">CONTINUE LEARNING</span>
+                            <span className="lesson-topics-toggle-title">Topics in This Lesson</span>
+                            <span className="lesson-topics-toggle-subtitle">
+                                {topicsLoading
+                                    ? "Loading lesson topics..."
+                                    : topicsError
+                                        ? "Topics could not be loaded."
+                                        : topics.length === 0
+                                            ? "No topics available for this lesson yet."
+                                            : `${topics.length} ${topics.length === 1 ? "topic" : "topics"} · Learn step by step`}
+                            </span>
+                        </span>
+                        <span className="lesson-topics-toggle-side">
+                            <span className="lesson-topics-completion">
+                                {topics.filter((topic) => {
+                                    const total = Number(topic.total_questions || 0);
+                                    const completed = Number(topic.completed_questions || 0);
+                                    return total > 0 && completed >= total;
+                                }).length}/{topics.length} completed
+                            </span>
+                            <span className={`lesson-topics-chevron ${expandedTopics ? "is-expanded" : ""}`} aria-hidden="true">
+                               ⌄
+                            </span>
+                        </span>
+                    </button>
+
+                    <div
+                        id="lesson-topics-content"
+                        className={`lesson-topics-content ${expandedTopics ? "is-open" : "is-closed"}`}
+                        hidden={!expandedTopics}
+                    >
+                        {topicsLoading ? (
+                            <div className="no-topics-msg lesson-topics-empty-state" role="status">
+                                <strong>Loading topics...</strong>
+                            </div>
+                        ) : topicsError ? (
+                            <div className="no-topics-msg lesson-topics-empty-state" role="alert">
+                                <strong>Unable to load topics</strong>
+                                <span>{topicsError}</span>
+                            </div>
+                        ) : topics.length === 0 ? (
+                            <div className="no-topics-msg lesson-topics-empty-state">
+                                <span className="lesson-topics-empty-icon">📚</span>
+                                <strong>No topics available for this lesson yet.</strong>
+                            </div>
+                        ) : (
+                            <div className="topics-grid">
+                                {topics.map((topic, index) => {
+                                    const totalQuestions = Number(topic.total_questions || 0);
+                                    const completedQuestions = Number(topic.completed_questions || 0);
+                                    const pct = totalQuestions > 0
+                                        ? Math.min(100, Math.round((completedQuestions / totalQuestions) * 100))
+                                        : 0;
+                                    const isDone = totalQuestions > 0 && pct >= 100;
+
+                                    return (
+                                        <Link
+                                            key={topic.id}
+                                            to={`/learning/course/${courseId}/lesson/${lessonId}/topic/${topic.id}`}
+                                            className={`topic-card-link lesson-topic-card ${isDone ? "topic-completed" : ""}`}
+                                        >
+                                            <div className="topic-num-circle">
+                                                {isDone ? "✓" : (topic.topic_number || index + 1)}
+                                            </div>
+                                            <div className="topic-card-info">
+                                                <span className="topic-card-title">{topic.title}</span>
+                                                {topic.description && (
+                                                    <span className="lesson-topic-description">{topic.description}</span>
+                                                )}
+                                                <div className="topic-card-meta">
+                                                    <span className="topic-card-qcount">
+                                                        {completedQuestions}/{totalQuestions} questions completed
+                                                    </span>
+                                                    <span className="topic-card-pct">{pct}%</span>
+                                                </div>
+                                                <div
+                                                    className="topic-mini-progress"
+                                                    role="progressbar"
+                                                    aria-label={`${topic.title} progress`}
+                                                    aria-valuemin={0}
+                                                    aria-valuemax={100}
+                                                    aria-valuenow={pct}
+                                                >
+                                                    <div
+                                                        className="topic-mini-fill"
+                                                        style={{ width: `${pct}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <span className="topic-card-arrow" aria-hidden="true">→</span>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </section>
 
         </main>

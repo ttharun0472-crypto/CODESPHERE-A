@@ -50,3 +50,10 @@ class Lesson(Base):
         "Course",
         back_populates="lessons"
     )
+
+    topics = relationship(
+        "Topic",
+        back_populates="lesson",
+        cascade="all, delete-orphan",
+        order_by="Topic.topic_number"
+    )

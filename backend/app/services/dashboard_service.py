@@ -26,35 +26,29 @@ def get_dashboard(
             "message": "User not found"
         }
 
-    # Courses
-    total_courses = db.query(Course).count()
+    # Available courses and lessons are counted from their actual tables,
+    # without joining through user progress or other related records.
+    total_courses = db.query(Course.id).count()
+    total_lessons = db.query(Lesson.id).count()
 
-    # Lessons
-    total_lessons = db.query(Lesson).count()
-
-    # User progress
+    # User progress is isolated to the authenticated student.
     progress_records = db.query(Progress).filter(
         Progress.user_id == user_id
     ).all()
 
+    normalized_progress = []
+    for progress in progress_records:
+        completion = float(progress.completion_percentage or 0)
+        normalized_progress.append(max(0, min(completion, 100)))
+
     lessons_started = len(progress_records)
-
     lessons_completed = sum(
-        1
-        for progress in progress_records
-        if progress.completion_percentage >= 100
+        1 for completion in normalized_progress if completion >= 100
     )
-
-    if progress_records:
-        average_progress = (
-            sum(
-                progress.completion_percentage
-                for progress in progress_records
-            )
-            / len(progress_records)
-        )
-    else:
-        average_progress = 0
+    average_progress = (
+        sum(normalized_progress) / len(normalized_progress)
+        if normalized_progress else 0
+    )
 
     # Resume
     resume = db.query(Resume).filter(

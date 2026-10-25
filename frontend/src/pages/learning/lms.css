@@ -1,0 +1,1604 @@
+/* ======================================================
+   LMS.CSS — Topic-by-Topic Learning System
+   Styles for TopicLearning.jsx and AdminTopics.jsx
+   Follows the existing CodeSphere design language
+====================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap");
+
+
+/* ======================================================
+   CSS VARIABLES — matches existing learning.css palette
+====================================================== */
+
+:root {
+    --lms-blue: #3155ff;
+    --lms-blue-dark: #1e3fd8;
+    --lms-blue-light: rgba(49, 85, 255, 0.08);
+    --lms-bg: #f7f7f2;
+    --lms-surface: #ffffff;
+    --lms-border: #e8e8e2;
+    --lms-text: #10152f;
+    --lms-text-muted: #62677a;
+    --lms-text-light: #9499aa;
+    --lms-green: #22c55e;
+    --lms-green-light: rgba(34, 197, 94, 0.1);
+    --lms-amber: #f59e0b;
+    --lms-amber-light: rgba(245, 158, 11, 0.1);
+    --lms-red: #ef4444;
+    --lms-red-light: rgba(239, 68, 68, 0.1);
+    --lms-purple: #8b5cf6;
+    --lms-purple-light: rgba(139, 92, 246, 0.08);
+    --lms-radius: 16px;
+    --lms-radius-sm: 10px;
+    --lms-shadow: 0 4px 24px rgba(16, 21, 47, 0.08);
+    --lms-shadow-lg: 0 8px 40px rgba(16, 21, 47, 0.14);
+}
+
+
+/* ======================================================
+   TOPIC LEARNING PAGE — Full layout
+====================================================== */
+
+.topic-page {
+    min-height: 100vh;
+    background: var(--lms-bg);
+    color: var(--lms-text);
+    font-family: "Inter", sans-serif;
+    padding-bottom: 120px;
+}
+
+
+/* ======================================================
+   TOP BAR — breadcrumb + progress indicator
+====================================================== */
+
+.topic-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--lms-border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.topic-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.topic-breadcrumb a {
+    color: var(--lms-text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.topic-breadcrumb a:hover {
+    color: var(--lms-blue);
+}
+
+.topic-breadcrumb .bc-sep {
+    color: var(--lms-text-light);
+    font-size: 13px;
+}
+
+.topic-breadcrumb .bc-current {
+    color: var(--lms-text);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.topic-progress-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 200px;
+}
+
+.topic-progress-bar-wrap span {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--lms-text-muted);
+    white-space: nowrap;
+}
+
+.topic-prog-track {
+    flex: 1;
+    height: 6px;
+    background: var(--lms-border);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.topic-prog-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--lms-blue), var(--lms-purple));
+    border-radius: 99px;
+    transition: width 0.5s ease;
+}
+
+
+/* ======================================================
+   MAIN LAYOUT — sidebar + content
+====================================================== */
+
+.topic-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .topic-layout {
+        grid-template-columns: 1fr;
+        padding: 24px 16px;
+    }
+}
+
+
+/* ======================================================
+   SIDEBAR — question navigator
+====================================================== */
+
+.topic-sidebar {
+    background: var(--lms-surface);
+    border: 1px solid var(--lms-border);
+    border-radius: var(--lms-radius);
+    padding: 24px;
+    position: sticky;
+    top: 80px;
+    box-shadow: var(--lms-shadow);
+}
+
+.sidebar-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--lms-blue);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.sidebar-topic-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--lms-text);
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.sidebar-questions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sidebar-q-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--lms-radius-sm);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    text-align: left;
+    width: 100%;
+    transition: background 0.18s, transform 0.15s;
+}
+
+.sidebar-q-item:hover {
+    background: var(--lms-blue-light);
+    transform: translateX(2px);
+}
+
+.sidebar-q-item.active {
+    background: var(--lms-blue-light);
+    border-left: 3px solid var(--lms-blue);
+}
+
+.sidebar-q-item.completed-q .sq-num {
+    background: var(--lms-green);
+    color: #fff;
+}
+
+.sq-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--lms-border);
+    color: var(--lms-text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.sidebar-q-item.active .sq-num {
+    background: var(--lms-blue);
+    color: #fff;
+}
+
+.sq-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--lms-text);
+    line-height: 1.35;
+    flex: 1;
+}
+
+.sq-check {
+    color: var(--lms-green);
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+
+/* ======================================================
+   QUESTION CARD — main content area
+====================================================== */
+
+.topic-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.question-card {
+    background: var(--lms-surface);
+    border: 1px solid var(--lms-border);
+    border-radius: var(--lms-radius);
+    overflow: hidden;
+    box-shadow: var(--lms-shadow);
+    animation: fadeSlideIn 0.35s ease;
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.question-card-header {
+    padding: 28px 32px 24px;
+    border-bottom: 1px solid var(--lms-border);
+    background: linear-gradient(135deg, var(--lms-blue-light) 0%, transparent 100%);
+}
+
+.q-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.q-number-badge {
+    background: var(--lms-blue);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 99px;
+    letter-spacing: 0.04em;
+}
+
+.q-topic-badge {
+    background: var(--lms-purple-light);
+    color: var(--lms-purple);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 99px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.q-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--lms-text);
+    line-height: 1.3;
+    margin: 0;
+}
+
+.quick-answer-box {
+    margin: 20px 32px 0;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    border-left: 4px solid var(--lms-green);
+    border-radius: 0 var(--lms-radius-sm) var(--lms-radius-sm) 0;
+}
+
+.quick-answer-box .qa-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--lms-green);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.quick-answer-box p {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a5c2a;
+    margin: 0;
+    line-height: 1.5;
+}
+
+
+/* ======================================================
+   SECTIONS — explanation, examples, etc.
+====================================================== */
+
+.question-sections {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.q-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.q-section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lms-text-muted);
+}
+
+.q-section-label .section-icon {
+    font-size: 15px;
+}
+
+.q-section-body {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--lms-text);
+}
+
+.q-section-body p {
+    margin: 0 0 10px;
+}
+
+.q-section-body p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ======================================================
+   CODE BLOCK
+====================================================== */
+
+.code-block-wrap {
+    background: #0f1117;
+    border-radius: var(--lms-radius-sm);
+    overflow: hidden;
+    border: 1px solid #2a2d3e;
+}
+
+.code-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #1a1d2e;
+    border-bottom: 1px solid #2a2d3e;
+}
+
+.code-lang-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: #7c85b0;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.code-block-wrap pre {
+    margin: 0;
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.code-block-wrap code {
+    font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: #e2e8f0;
+    white-space: pre;
+}
+
+
+/* ======================================================
+   EXPECTED OUTPUT
+====================================================== */
+
+.output-block {
+    background: #0a1628;
+    border: 1px solid #1e3a5f;
+    border-radius: var(--lms-radius-sm);
+    padding: 16px 20px;
+}
+
+.output-label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #60a5fa;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.output-block pre {
+    margin: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    color: #86efac;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+
+/* ======================================================
+   FLOWCHART
+====================================================== */
+
+.flowchart-block {
+    background: var(--lms-blue-light);
+    border: 1px dashed rgba(49, 85, 255, 0.3);
+    border-radius: var(--lms-radius-sm);
+    padding: 20px 24px;
+}
+
+.flowchart-block pre {
+    margin: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    color: var(--lms-text);
+    white-space: pre-wrap;
+    line-height: 1.8;
+}
+
+
+/* ======================================================
+   KEY POINTS
+====================================================== */
+
+.key-points-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.key-points-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--lms-text);
+}
+
+.key-points-list li::before {
+    content: "▸";
+    color: var(--lms-blue);
+    font-weight: 700;
+    margin-top: 1px;
+    flex-shrink: 0;
+}
+
+
+/* ======================================================
+   REMEMBER THIS BOX
+====================================================== */
+
+.remember-box {
+    background: linear-gradient(135deg, var(--lms-amber-light), rgba(251, 191, 36, 0.05));
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: var(--lms-radius-sm);
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.remember-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.remember-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: #92400e;
+    line-height: 1.6;
+    margin: 0;
+}
+
+
+/* ======================================================
+   MARK COMPLETE BUTTON
+====================================================== */
+
+.mark-complete-bar {
+    padding: 0 32px 32px;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-mark-complete {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--lms-blue) 0%, var(--lms-purple) 100%);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 99px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    box-shadow: 0 4px 20px rgba(49, 85, 255, 0.35);
+}
+
+.btn-mark-complete:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(49, 85, 255, 0.45);
+}
+
+.btn-mark-complete:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-already-done {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--lms-green-light);
+    color: #16a34a;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: 99px;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+
+/* ======================================================
+   NAVIGATION — prev / next question
+====================================================== */
+
+.question-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.q-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    border-radius: var(--lms-radius-sm);
+    border: 1.5px solid var(--lms-border);
+    background: var(--lms-surface);
+    color: var(--lms-text);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    box-shadow: var(--lms-shadow);
+}
+
+.q-nav-btn:hover {
+    border-color: var(--lms-blue);
+    background: var(--lms-blue-light);
+    transform: translateY(-1px);
+}
+
+.q-nav-btn.primary {
+    background: var(--lms-blue);
+    border-color: var(--lms-blue);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(49, 85, 255, 0.3);
+}
+
+.q-nav-btn.primary:hover {
+    background: var(--lms-blue-dark);
+    transform: translateY(-2px);
+}
+
+.q-nav-btn:disabled,
+.q-nav-btn.invisible {
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* ======================================================
+   TOPIC COMPLETED / LESSON COMPLETED / COURSE COMPLETED
+====================================================== */
+
+.completion-card {
+    background: var(--lms-surface);
+    border: 1px solid var(--lms-border);
+    border-radius: var(--lms-radius);
+    padding: 48px 40px;
+    text-align: center;
+    box-shadow: var(--lms-shadow-lg);
+    animation: fadeSlideIn 0.4s ease;
+}
+
+.completion-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+    display: block;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { transform: scale(0); }
+    to   { transform: scale(1); }
+}
+
+.completion-card h2 {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--lms-text);
+    margin: 0 0 12px;
+}
+
+.completion-card p {
+    font-size: 16px;
+    color: var(--lms-text-muted);
+    margin: 0 0 32px;
+    line-height: 1.6;
+}
+
+.completion-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.btn-next-topic {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--lms-blue) 0%, var(--lms-purple) 100%);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 28px;
+    border-radius: 99px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(49, 85, 255, 0.35);
+}
+
+.btn-next-topic:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(49, 85, 255, 0.45);
+}
+
+.btn-review {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--lms-text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 24px;
+    border: 1.5px solid var(--lms-border);
+    border-radius: 99px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.btn-review:hover {
+    border-color: var(--lms-blue);
+    color: var(--lms-blue);
+}
+
+
+/* ======================================================
+   LOADING / ERROR STATES
+====================================================== */
+
+.lms-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 20px;
+    color: var(--lms-text-muted);
+}
+
+.lms-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--lms-border);
+    border-top-color: var(--lms-blue);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.lms-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 60px 24px;
+    text-align: center;
+    color: var(--lms-text-muted);
+}
+
+.lms-error h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--lms-text);
+    margin: 0;
+}
+
+
+/* ======================================================
+   ADMIN TOPICS PAGE
+====================================================== */
+
+.admin-topics-page {
+    min-height: 100vh;
+    background: var(--lms-bg);
+    font-family: "Inter", sans-serif;
+    padding-bottom: 80px;
+}
+
+.admin-topics-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+.admin-topics-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 36px;
+}
+
+.admin-topics-header h1 {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--lms-text);
+    margin: 8px 0 4px;
+}
+
+.admin-topics-header p {
+    font-size: 14px;
+    color: var(--lms-text-muted);
+    margin: 0;
+}
+
+.admin-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--lms-text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: color 0.2s;
+}
+
+.admin-back-link:hover {
+    color: var(--lms-blue);
+}
+
+
+/* ======================================================
+   ADMIN SELECTORS — course + lesson picker
+====================================================== */
+
+.admin-selectors {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+@media (max-width: 700px) {
+    .admin-selectors { grid-template-columns: 1fr; }
+}
+
+.admin-select-card {
+    background: var(--lms-surface);
+    border: 1px solid var(--lms-border);
+    border-radius: var(--lms-radius);
+    padding: 24px;
+    box-shadow: var(--lms-shadow);
+}
+
+.admin-select-card label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--lms-blue);
+    margin-bottom: 10px;
+}
+
+.admin-select-card select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--lms-border);
+    border-radius: var(--lms-radius-sm);
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    color: var(--lms-text);
+    background: var(--lms-bg);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2362677a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    transition: border-color 0.2s;
+}
+
+.admin-select-card select:focus {
+    outline: none;
+    border-color: var(--lms-blue);
+}
+
+
+/* ======================================================
+   ADMIN CONTENT GRID — topics list + form
+====================================================== */
+
+.admin-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .admin-content-grid { grid-template-columns: 1fr; }
+}
+
+.admin-lms-card {
+    background: var(--lms-surface);
+    border: 1px solid var(--lms-border);
+    border-radius: var(--lms-radius);
+    padding: 28px;
+    box-shadow: var(--lms-shadow);
+}
+
+.admin-lms-card h2 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--lms-text);
+    margin: 0 0 20px;
+}
+
+.admin-lms-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.admin-lms-form input,
+.admin-lms-form textarea,
+.admin-lms-form select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--lms-border);
+    border-radius: var(--lms-radius-sm);
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    color: var(--lms-text);
+    background: var(--lms-bg);
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+    resize: vertical;
+}
+
+.admin-lms-form input:focus,
+.admin-lms-form textarea:focus,
+.admin-lms-form select:focus {
+    outline: none;
+    border-color: var(--lms-blue);
+}
+
+.admin-lms-form textarea {
+    min-height: 80px;
+}
+
+.admin-lms-form textarea.tall {
+    min-height: 140px;
+}
+
+.admin-lms-form label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--lms-text-muted);
+    margin-bottom: 4px;
+    display: block;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-form-row {
+    display: flex;
+    gap: 12px;
+}
+
+.admin-form-row button {
+    flex: 1;
+}
+
+.btn-primary {
+    background: var(--lms-blue);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--lms-radius-sm);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    font-family: "Inter", sans-serif;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--lms-blue-dark);
+    transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--lms-text-muted);
+    border: 1.5px solid var(--lms-border);
+    padding: 12px 20px;
+    border-radius: var(--lms-radius-sm);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    font-family: "Inter", sans-serif;
+}
+
+.btn-secondary:hover {
+    border-color: var(--lms-blue);
+    color: var(--lms-blue);
+}
+
+.btn-danger {
+    background: transparent;
+    color: var(--lms-red);
+    border: 1.5px solid rgba(239, 68, 68, 0.3);
+    padding: 8px 14px;
+    border-radius: var(--lms-radius-sm);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: "Inter", sans-serif;
+}
+
+.btn-danger:hover {
+    background: var(--lms-red-light);
+}
+
+.btn-edit {
+    background: transparent;
+    color: var(--lms-blue);
+    border: 1.5px solid rgba(49, 85, 255, 0.25);
+    padding: 8px 14px;
+    border-radius: var(--lms-radius-sm);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: "Inter", sans-serif;
+}
+
+.btn-edit:hover {
+    background: var(--lms-blue-light);
+}
+
+
+/* ======================================================
+   TOPIC LIST ITEMS
+====================================================== */
+
+.topic-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.topic-list-item {
+    border: 1.5px solid var(--lms-border);
+    border-radius: var(--lms-radius-sm);
+    padding: 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.topic-list-item:hover {
+    border-color: var(--lms-blue);
+    background: var(--lms-blue-light);
+}
+
+.topic-list-item.selected {
+    border-color: var(--lms-blue);
+    background: var(--lms-blue-light);
+}
+
+.topic-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.topic-item-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--lms-text);
+    flex: 1;
+}
+
+.topic-item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.topic-item-desc {
+    font-size: 13px;
+    color: var(--lms-text-muted);
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+.topic-q-count {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--lms-text-light);
+    margin-top: 4px;
+}
+
+
+/* ======================================================
+   QUESTION LIST ITEMS
+====================================================== */
+
+.question-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.question-list-item {
+    border: 1.5px solid var(--lms-border);
+    border-radius: var(--lms-radius-sm);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    transition: border-color 0.2s;
+}
+
+.question-list-item:hover {
+    border-color: var(--lms-border);
+    background: #fafaf8;
+}
+
+.q-list-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--lms-text);
+    flex: 1;
+    line-height: 1.4;
+}
+
+.q-list-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--lms-text-light);
+    margin-right: 4px;
+}
+
+.q-list-actions {
+    display: flex;
+    gap: 8px;
+}
+
+
+/* ======================================================
+   ADMIN ERROR BANNER
+====================================================== */
+
+.admin-lms-error {
+    background: var(--lms-red-light);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: var(--lms-radius-sm);
+    color: #991b1b;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+}
+
+.admin-lms-success {
+    background: var(--lms-green-light);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    border-radius: var(--lms-radius-sm);
+    color: #166534;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+}
+
+.admin-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--lms-text-muted);
+    font-size: 14px;
+    font-style: italic;
+}
+
+.divider {
+    height: 1px;
+    background: var(--lms-border);
+    margin: 20px 0;
+}
+
+.section-tab-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.section-tab {
+    padding: 8px 16px;
+    border-radius: 99px;
+    border: 1.5px solid var(--lms-border);
+    background: transparent;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--lms-text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: "Inter", sans-serif;
+}
+
+.section-tab:hover {
+    border-color: var(--lms-blue);
+    color: var(--lms-blue);
+}
+
+.section-tab.active {
+    background: var(--lms-blue);
+    border-color: var(--lms-blue);
+    color: #fff;
+}
+
+
+/* ======================================================
+   LESSON TOPICS SECTION (within LessonDetails)
+====================================================== */
+
+.lesson-topics-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+}
+
+.lesson-topics-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.lesson-topics-header h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--lms-text);
+    margin: 0;
+}
+
+.topics-grid {
+    display: grid;
+    gap: 14px;
+}
+
+.topic-card-link {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    background: var(--lms-surface);
+    border: 1.5px solid var(--lms-border);
+    border-radius: var(--lms-radius-sm);
+    padding: 18px 20px;
+    text-decoration: none;
+    color: var(--lms-text);
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(16, 21, 47, 0.04);
+}
+
+.topic-card-link:hover {
+    border-color: var(--lms-blue);
+    transform: translateX(4px);
+    box-shadow: var(--lms-shadow);
+}
+
+.topic-card-link.topic-completed {
+    border-color: rgba(34, 197, 94, 0.4);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.03), #fff);
+}
+
+.topic-num-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--lms-blue-light);
+    color: var(--lms-blue);
+    font-size: 16px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.topic-card-link.topic-completed .topic-num-circle {
+    background: var(--lms-green-light);
+    color: var(--lms-green);
+}
+
+.topic-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.topic-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--lms-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.topic-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.topic-card-qcount {
+    font-size: 12px;
+    color: var(--lms-text-muted);
+    font-weight: 500;
+}
+
+.topic-card-pct {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--lms-blue);
+}
+
+.topic-card-link.topic-completed .topic-card-pct {
+    color: var(--lms-green);
+}
+
+.topic-card-arrow {
+    font-size: 20px;
+    color: var(--lms-text-light);
+    transition: color 0.2s;
+}
+
+.topic-card-link:hover .topic-card-arrow {
+    color: var(--lms-blue);
+}
+
+.no-topics-msg {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--lms-text-muted);
+    font-size: 14px;
+    background: var(--lms-surface);
+    border: 1.5px dashed var(--lms-border);
+    border-radius: var(--lms-radius);
+}
+
+.topic-mini-progress {
+    height: 4px;
+    background: var(--lms-border);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.topic-mini-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--lms-blue), var(--lms-purple));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+}
+
+.topic-card-link.topic-completed .topic-mini-fill {
+    background: var(--lms-green);
+}
+
+
+/* ======================================================
+   EXPANDABLE LESSON TOPICS — CodeSphere theme
+   Uses the existing LMS palette and topic-card components.
+====================================================== */
+
+.lesson-topics-panel {
+    overflow: hidden;
+    background: var(--lms-surface);
+    border: 1px solid var(--lms-border);
+    border-radius: var(--lms-radius);
+    box-shadow: var(--lms-shadow);
+}
+
+.lesson-topics-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 24px 28px;
+    border: 0;
+    background: linear-gradient(115deg, rgba(49, 85, 255, 0.055), #fff 65%);
+    color: var(--lms-text);
+    text-align: left;
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+    transition: background 0.2s ease;
+}
+
+.lesson-topics-toggle:hover {
+    background: linear-gradient(115deg, rgba(49, 85, 255, 0.1), #fff 70%);
+}
+
+.lesson-topics-toggle:focus-visible {
+    outline: 3px solid rgba(49, 85, 255, 0.35);
+    outline-offset: -3px;
+}
+
+.lesson-topics-toggle-copy,
+.lesson-topics-toggle-side {
+    display: flex;
+    flex-direction: column;
+}
+
+.lesson-topics-toggle-copy {
+    gap: 5px;
+    min-width: 0;
+}
+
+.lesson-topics-eyebrow {
+    color: var(--lms-blue);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+.lesson-topics-toggle-title {
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.lesson-topics-toggle-subtitle {
+    color: var(--lms-text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.lesson-topics-toggle-side {
+    flex-shrink: 0;
+    align-items: flex-end;
+    gap: 9px;
+}
+
+.lesson-topics-completion {
+    color: var(--lms-text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.lesson-topics-chevron {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--lms-border);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--lms-blue);
+    font-size: 23px;
+    line-height: 1;
+    transform: rotate(0deg);
+    transition: transform 0.22s ease, background 0.22s ease;
+}
+
+.lesson-topics-chevron.is-expanded {
+    transform: rotate(180deg);
+    background: var(--lms-blue-light);
+}
+
+.lesson-topics-content {
+    padding: 0 24px 24px;
+    border-top: 1px solid var(--lms-border);
+    animation: lessonTopicsReveal 0.22s ease;
+}
+
+.lesson-topics-content[hidden] {
+    display: none;
+}
+
+@keyframes lessonTopicsReveal {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.lesson-topic-card {
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+}
+
+.lesson-topic-card .topic-card-info {
+    min-width: 0;
+}
+
+.lesson-topic-card .topic-card-title {
+    white-space: normal;
+}
+
+.lesson-topic-description {
+    display: block;
+    margin-top: 2px;
+    color: var(--lms-text-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.lesson-topics-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    border-radius: var(--lms-radius-sm);
+}
+
+.lesson-topics-empty-icon {
+    font-size: 28px;
+}
+
+.lesson-topics-empty-state strong {
+    color: var(--lms-text);
+    font-size: 15px;
+}
+
+.lesson-topics-empty-state span:last-child {
+    font-size: 13px;
+}
+
+@media (max-width: 700px) {
+    .lesson-topics-section {
+        padding: 0 16px 40px;
+    }
+
+    .lesson-topics-toggle {
+        padding: 20px 16px;
+        gap: 12px;
+    }
+
+    .lesson-topics-toggle-title {
+        font-size: 18px;
+    }
+
+    .lesson-topics-toggle-subtitle {
+        font-size: 12px;
+    }
+
+    .lesson-topics-completion {
+        white-space: normal;
+        text-align: right;
+        font-size: 11px;
+    }
+
+    .lesson-topics-content {
+        padding: 0 12px 16px;
+    }
+
+    .lesson-topic-card {
+        grid-template-columns: 38px minmax(0, 1fr) auto;
+        gap: 10px;
+        padding: 14px 12px;
+    }
+
+    .lesson-topic-card .topic-num-circle {
+        width: 38px;
+        height: 38px;
+        font-size: 14px;
+    }
+}

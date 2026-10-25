@@ -12,7 +12,7 @@ import {
 } from "../../services/learningApi";
 
 const emptyCourse = { title: "", description: "" };
-const emptyLesson = { course_id: "", title: "", notes: "", important_concepts: "", youtube_url: "" };
+const emptyLesson = { course_id: "", title: "", notes: "", important_concepts: "", youtube_url: "", lesson_order: "" };
 
 function AdminLearning() {
     const navigate = useNavigate();
@@ -80,7 +80,11 @@ function AdminLearning() {
         event.preventDefault();
         try {
             setSaving(true);
-            const payload = { ...lessonForm, course_id: Number(lessonForm.course_id) };
+            const payload = {
+                ...lessonForm,
+                course_id: Number(lessonForm.course_id),
+                lesson_order: lessonForm.lesson_order ? Number(lessonForm.lesson_order) : null,
+            };
             if (editingLesson) await updateLesson(editingLesson, payload);
             else await createLesson(payload);
             setLessonForm({ ...emptyLesson, course_id: lessonForm.course_id });
@@ -126,6 +130,7 @@ function AdminLearning() {
             notes: lesson.notes || "",
             important_concepts: lesson.important_concepts || "",
             youtube_url: lesson.youtube_url || "",
+            lesson_order: lesson.lesson_order ? String(lesson.lesson_order) : "",
         });
     };
 
@@ -162,6 +167,7 @@ function AdminLearning() {
                             {courses.map((course) => <option key={course.id} value={course.id}>{course.title}</option>)}
                         </select>
                         <input required minLength={2} placeholder="Lesson title" value={lessonForm.title} onChange={(event) => setLessonForm({ ...lessonForm, title: event.target.value })} />
+                        <input type="number" min={1} placeholder="Lesson order (blank adds to end)" value={lessonForm.lesson_order} onChange={(event) => setLessonForm({ ...lessonForm, lesson_order: event.target.value })} />
                         <textarea placeholder="Notes" value={lessonForm.notes} onChange={(event) => setLessonForm({ ...lessonForm, notes: event.target.value })} />
                         <textarea placeholder="Important concepts" value={lessonForm.important_concepts} onChange={(event) => setLessonForm({ ...lessonForm, important_concepts: event.target.value })} />
                         <input type="url" placeholder="YouTube URL" value={lessonForm.youtube_url} onChange={(event) => setLessonForm({ ...lessonForm, youtube_url: event.target.value })} />
@@ -182,7 +188,7 @@ function AdminLearning() {
                             </div>
                             {(lessons[course.id] || []).map((lesson) => (
                                 <div className="learning-admin-lesson" key={lesson.id}>
-                                    <span>{lesson.title}</span><div className="admin-form-actions"><button type="button" onClick={() => startLessonEdit(lesson)}>Edit</button><button type="button" className="delete-btn" onClick={() => removeLesson(lesson)}>Delete</button></div>
+                                    <span>{String(lesson.lesson_order || "").padStart(2, "0")} · {lesson.title}</span><div className="admin-form-actions"><button type="button" onClick={() => startLessonEdit(lesson)}>Edit</button><button type="button" className="delete-btn" onClick={() => removeLesson(lesson)}>Delete</button></div>
                                 </div>
                             ))}
                         </article>

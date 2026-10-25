@@ -13,7 +13,8 @@ from app.schemas.progress_schema import (
 from app.services.progress_service import (
     update_progress,
     get_user_progress,
-    get_lesson_progress
+    get_lesson_progress,
+    get_completed_courses_for_interview,
 )
 
 
@@ -47,6 +48,14 @@ def update_lesson_progress(
 # =========================
 # GET ALL PROGRESS
 # =========================
+
+@router.get("/completed-courses")
+def completed_courses_for_interview(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    return get_completed_courses_for_interview(current_user.id, db)
+
 
 @router.get(
     "",

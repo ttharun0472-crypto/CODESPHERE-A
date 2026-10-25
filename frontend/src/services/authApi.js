@@ -1,52 +1,76 @@
-const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+import { apiRequest } from "./apiClient";
 
-async function authRequest(endpoint, options = {}) {
-    const response = await fetch(
-        `${API_BASE_URL}${endpoint}`,
-        {
-            ...options,
-            headers: {
-                "Content-Type": "application/json",
-                ...(options.headers || {}),
-            },
-        }
-    );
+export function loginUser(credentials) {
+    return apiRequest("/auth/login", {
+        method: "POST",
+        body: JSON.stringify(credentials),
+    });
+}
 
-    let data;
-    try {
-        data = await response.json();
-    } catch {
-        data = undefined;
-    }
-
-    if (!response.ok) {
-        throw new Error(
-            data?.detail ||
-            data?.message ||
-            `Request failed with status ${response.status}`
-        );
-    }
-
-    return data;
+export function adminLoginUser(credentials) {
+    return apiRequest("/auth/admin/login", {
+        method: "POST",
+        body: JSON.stringify(credentials),
+    });
 }
 
 export function registerUser(user) {
-    return authRequest(
-        "/auth/register",
-        {
-            method: "POST",
-            body: JSON.stringify(user),
-        }
-    );
+    return apiRequest("/auth/register", {
+        method: "POST",
+        body: JSON.stringify(user),
+    });
 }
 
-export function loginUser(credentials) {
-    return authRequest(
-        "/auth/login",
-        {
-            method: "POST",
-            body: JSON.stringify(credentials),
-        }
-    );
+export function requestRegistrationOtp(email) {
+    return apiRequest("/auth/register/request-otp", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+    });
+}
+
+export function verifyRegistrationOtp(email, otp) {
+    return apiRequest("/auth/register/verify-otp", {
+        method: "POST",
+        body: JSON.stringify({ email, otp }),
+    });
+}
+
+export function requestEmailOtp(email) {
+    return apiRequest("/auth/otp/request", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+    });
+}
+
+export function verifyEmailOtp(email, otp) {
+    return apiRequest("/auth/otp/verify", {
+        method: "POST",
+        body: JSON.stringify({ email, otp }),
+    });
+}
+
+export function requestPasswordResetOtp(email) {
+    return apiRequest("/auth/password-reset/request", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+    });
+}
+
+export function verifyPasswordResetOtp(email, otp) {
+    return apiRequest("/auth/password-reset/verify", {
+        method: "POST",
+        body: JSON.stringify({ email, otp }),
+    });
+}
+
+export function resetPasswordWithOtp({ email, otp, newPassword, confirmPassword }) {
+    return apiRequest("/auth/password-reset", {
+        method: "POST",
+        body: JSON.stringify({
+            email,
+            otp,
+            new_password: newPassword,
+            confirm_password: confirmPassword,
+        }),
+    });
 }

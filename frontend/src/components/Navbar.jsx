@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { getAuthToken } from "../services/learningApi";
+import { API_BASE_URL } from "../services/apiClient";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -31,6 +32,7 @@ function Navbar() {
         localStorage.removeItem("refresh_token");
         localStorage.removeItem("token");
         localStorage.removeItem("authToken");
+        localStorage.removeItem("otp_verified");
         localStorage.removeItem("role");
         localStorage.removeItem("is_admin");
 
@@ -38,7 +40,7 @@ function Navbar() {
 
         if (token) {
             try {
-                await fetch("http://127.0.0.1:8000/auth/logout", {
+                await fetch(`${API_BASE_URL}/auth/logout`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

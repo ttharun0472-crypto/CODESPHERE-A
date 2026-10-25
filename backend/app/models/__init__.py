@@ -5,3 +5,10 @@ from .progress import Progress
 from .interview import Interview
 from .resume import Resume
 from .placement import Placement
+from .topic import Topic
+from .question import Question
+from .question_progress import QuestionProgress
+from app.models.student_interview_skill import StudentInterviewSkill
+from .interview_session import InterviewSession
+from .email_otp_challenge import EmailOtpChallenge
+from .mcq_interview_attempt import MCQInterviewAttempt

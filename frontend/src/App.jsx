@@ -9,11 +9,19 @@ import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import AdminPanel from "./pages/admin/AdminPanel";
 import AdminLearning from "./pages/admin/AdminLearning";
+import AdminTopics from "./pages/admin/AdminTopics";
 
 import Courses from "./pages/learning/Courses";
 import CourseDetails from "./pages/learning/CourseDetails";
 import LessonDetails from "./pages/learning/LessonDetails";
 import LearningAnalytics from "./pages/learning/learningAnalytics";
+import TopicLearning from "./pages/learning/TopicLearning";
+
+import Resume from "./pages/resume/Resume";
+import Interview from "./pages/interview/Interview";
+import Placements from "./pages/placements/Placements";
+import AIInterview from "./pages/interview/AIInterview";
+
 
 function App() {
   return (
@@ -72,9 +80,46 @@ function App() {
           }
         />
 
-        <Route path="/interview" element={<h1>Interview Preparation</h1>} />
-        <Route path="/resume" element={<h1>Resume</h1>} />
-        <Route path="/placements" element={<h1>Placements</h1>} />
+        <Route
+          path="/interview"
+          element={
+            <ProtectedRoute>
+              <Interview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/interview/ai"
+          element={
+            <ProtectedRoute>
+              <AIInterview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/interview/questions"
+          element={
+            <ProtectedRoute>
+              <Interview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/resume"
+          element={
+            <ProtectedRoute>
+              <Resume />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/placements"
+          element={
+            <ProtectedRoute>
+              <Placements />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/admin"
           element={
@@ -88,6 +133,22 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminLearning />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/topics"
+          element={
+            <ProtectedRoute>
+              <AdminTopics />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/learning/course/:courseId/lesson/:lessonId/topic/:topicId"
+          element={
+            <ProtectedRoute>
+              <TopicLearning />
             </ProtectedRoute>
           }
         />
