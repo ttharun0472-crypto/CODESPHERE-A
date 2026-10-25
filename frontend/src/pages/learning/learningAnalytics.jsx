@@ -9,7 +9,7 @@ import {
     getAuthToken,
 } from "../../services/learningApi";
 
-import "./Learning.css";
+import "./learning.css";
 
 
 function LearningAnalytics() {

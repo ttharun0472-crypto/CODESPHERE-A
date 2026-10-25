@@ -16,7 +16,7 @@ import {
 
 import { getTopicsForLesson } from "../../services/lmsApi";
 
-import "./Learning.css";
+import "./learning.css";
 import "./lms.css";
 
 
